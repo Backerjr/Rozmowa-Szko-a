@@ -11,8 +11,8 @@ permissions:
   id-token: write
 
 env:
-  GH_USERNAME: your-username          # <-- change
-  REPO_NAME: your-repo                # <-- change
+  GH_USERNAME: backerjr          # <-- change
+  REPO_NAME: Rozmowa-Szko-a                # <-- change
   SITE_TITLE: "ROZMOWA Wiki"
   SITE_DESCRIPTION: "Conversation-first English. Cozy space. Coffee & crafts."
   CUSTOM_DOMAIN: ""                   # e.g., "rozmowaszkola.pl" (leave empty to skip CNAME)
