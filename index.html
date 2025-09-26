@@ -52,6 +52,38 @@
         .kanban-card {
             border-left: 4px solid;
         }
+        .gemini-btn {
+            background-color: #D3A37F;
+            color: white;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .gemini-btn:hover {
+            background-color: #c08457;
+            box-shadow: 0 4px 14px 0 rgba(0,0,0,0.1);
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #D3A37F;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .modal-overlay {
+            background-color: rgba(0,0,0,0.5);
+            transition: opacity 0.3s ease;
+        }
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fade-in 0.5s ease-out forwards;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -75,6 +107,11 @@
         <section class="text-center mb-16">
             <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Coffee. Crafts. Conversation. Confidence.</h1>
             <p class="text-lg text-gray-600 max-w-3xl mx-auto">An interactive action plan for the first 90 days, aimed at building a community and filling seats at ROZMOWA. We focus on real actions, not spreadsheets.</p>
+            <div class="mt-8">
+                <button id="briefing-btn" class="gemini-btn font-bold py-3 px-6 rounded-lg shadow-sm text-lg">
+                    ✨ Get AI Strategic Briefing
+                </button>
+            </div>
         </section>
 
         <section id="goals" class="mb-16">
@@ -112,7 +149,7 @@
 
         <section id="roadmap" class="mb-16">
             <h2 class="text-3xl font-bold text-center text-gray-800 mb-2">90-Day Roadmap</h2>
-            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">A detailed, week-by-week action plan. Click on a month to see the key tasks and goals that will help us grow step by step.</p>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">A detailed, week-by-week action plan. Click on a month to see the key tasks and goals that will help us grow step by step. You can also expand tasks to get AI-powered action steps.</p>
             <div class="flex justify-center mb-8 bg-gray-100 rounded-full p-2 max-w-sm mx-auto">
                 <button data-tab="month1" class="tab-btn active w-full py-2 px-4 rounded-full font-semibold">Month 1</button>
                 <button data-tab="month2" class="tab-btn w-full py-2 px-4 rounded-full font-semibold">Month 2</button>
@@ -123,18 +160,43 @@
         </section>
 
         <section id="tools" class="bg-white rounded-2xl p-8 shadow-sm">
-            <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Tools & Quick Actions</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                <div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Post Ideas Bank</h3>
-                    <p class="text-gray-600 mb-6">Ready-to-use captions that capture the spirit of ROZMOWA. Use them to quickly create engaging social media content.</p>
-                    <div id="captions-container" class="space-y-4">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">AI-Powered Tools & Quick Actions</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                <div class="lg:col-span-1">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Kanban Board</h3>
+                     <p class="text-gray-600 mb-6">A clear view of our priorities to maintain momentum.</p>
+                    <div id="kanban-container" class="space-y-6">
                     </div>
                 </div>
-                <div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Kanban Board</h3>
-                     <p class="text-gray-600 mb-6">A clear view of our priorities. We know what's to be done, what's in progress, and what we've completed to maintain momentum.</p>
-                    <div id="kanban-container" class="space-y-6">
+                <div class="lg:col-span-2">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4">Post Ideas Generator ✨</h3>
+                            <p class="text-gray-600 mb-6">Select an audience to generate fresh, engaging post ideas.</p>
+                            <div class="flex items-center space-x-2 mb-4">
+                                <select id="audience-selector" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500"></select>
+                            </div>
+                             <button id="generate-posts-btn" class="gemini-btn font-bold py-2 px-4 rounded-md shadow-sm flex items-center justify-center w-full">
+                                <span class="btn-text">Generate Ideas</span>
+                                <div class="loader hidden" style="width:20px; height:20px; border-width: 2px;"></div>
+                            </button>
+                            <div id="gemini-posts-output" class="space-y-3 mt-4"></div>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4">Email Outreach Drafter ✨</h3>
+                            <p class="text-gray-600 mb-6">Need to contact press or a local business? Let AI draft the email.</p>
+                             <div class="flex items-center space-x-2 mb-4">
+                                <select id="email-type-selector" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-amber-500 focus:border-amber-500">
+                                    <option value="press">Local Press</option>
+                                    <option value="sme">Local Business (SME)</option>
+                                </select>
+                            </div>
+                            <button id="generate-email-btn" class="gemini-btn font-bold py-2 px-4 rounded-md shadow-sm flex items-center justify-center w-full">
+                                <span class="btn-text">Draft Email</span>
+                                <div class="loader hidden" style="width:20px; height:20px; border-width: 2px;"></div>
+                            </button>
+                             <div id="gemini-email-output" class="mt-4"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -148,15 +210,27 @@
         </div>
     </footer>
     
+    <div id="task-modal" class="fixed inset-0 z-50 items-center justify-center hidden">
+        <div class="modal-overlay fixed inset-0"></div>
+        <div class="bg-white rounded-lg shadow-xl p-6 m-4 max-w-2xl w-full relative transform transition-all duration-300 scale-95 opacity-0" id="modal-content">
+            <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl font-bold">&times;</button>
+            <h3 id="modal-title" class="text-2xl font-bold mb-4"></h3>
+            <div id="modal-body" class="space-y-4 prose max-w-none"></div>
+            <div id="modal-loader" class="flex justify-center items-center py-8">
+                <div class="loader"></div>
+            </div>
+        </div>
+    </div>
+
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         
         const data = {
             kpis: [
-                { title: "New Leads Weekly", value: "25+", icon: "🎯", description: "Goal: Generate a steady flow of potential customers." },
-                { title: "Cost Per Lead", value: "< 25 PLN", icon: "💰", description: "Goal: Maintain cost-effectiveness of our campaigns." },
-                { title: "Conversion (Trial -> Enroll)", value: "≥ 50%", icon: "📈", description: "Goal: Effectively convert interest into actual enrollments." },
-                { title: "Referral Rate", value: "≥ 15%", icon: "🤝", description: "Goal: Build a community that actively recommends us (Month 3 goal)." },
+                { title: "New Leads Weekly", value: "25+", icon: "🎯" },
+                { title: "Cost Per Lead", value: "< 25 PLN", icon: "💰" },
+                { title: "Conversion (Trial -> Enroll)", value: "≥ 50%", icon: "📈" },
+                { title: "Referral Rate", value: "≥ 15%", icon: "🤝" },
             ],
             audience: [
                 { title: "Adults A0-B1", description: "People who were discouraged by English in school and are looking for friendly practice.", icon: "🧑‍🏫" },
@@ -179,40 +253,10 @@
                 { stage: "Refer", icon: "🗣️" }
             ],
             timeline: {
-                month1: {
-                    title: "Month 1: Building Awareness",
-                    weeks: [
-                        { week: "Week 1", task: "Launch website + first batch of Reels." },
-                        { week: "Week 2", task: "Grand opening + posts on Google Business profile." },
-                        { week: "Week 3", task: "Flyer drop (QR to WA chat) + local press outreach." },
-                        { week: "Week 4", task: "First 'Conversation & Crafts' night." }
-                    ]
-                },
-                month2: {
-                    title: "Month 2: Engagement & Conversion",
-                    weeks: [
-                        { week: "Week 5", task: "Launch loyalty program + Starter Pack ads (50 PLN/day)." },
-                        { week: "Week 6", task: "Parent-focused exam prep campaign." },
-                        { week: "Week 7", task: "Customer appreciation event + reviews drive." },
-                        { week: "Week 8", task: "Expanded workshops (evening slots)." }
-                    ]
-                },
-                month3: {
-                    title: "Month 3: Expansion & Loyalty",
-                    weeks: [
-                        { week: "Week 9", task: "Referral program rollout (Give 10 / Get 10 zł)." },
-                        { week: "Week 10", task: "Outreach to local SMEs with mini-group offers." },
-                        { week: "Week 11", task: "Batch 2 of Reels (exam sprint + success stories)." },
-                        { week: "Week 12", task: "Seasonal event with Polish holiday pastries." }
-                    ]
-                }
+                month1: { title: "Month 1: Building Awareness", weeks: [ { week: "Week 1", task: "Launch website + first batch of Reels." }, { week: "Week 2", task: "Grand opening + posts on Google Business profile." }, { week: "Week 3", task: "Flyer drop (QR to WA chat) + local press outreach." }, { week: "Week 4", task: "First 'Conversation & Crafts' night." } ] },
+                month2: { title: "Month 2: Engagement & Conversion", weeks: [ { week: "Week 5", task: "Launch loyalty program + Starter Pack ads (50 PLN/day)." }, { week: "Week 6", task: "Parent-focused exam prep campaign." }, { week: "Week 7", task: "Customer appreciation event + reviews drive." }, { week: "Week 8", task: "Expanded workshops (evening slots)." } ] },
+                month3: { title: "Month 3: Expansion & Loyalty", weeks: [ { week: "Week 9", task: "Referral program rollout (Give 10 / Get 10 zł)." }, { week: "Week 10", task: "Outreach to local SMEs with mini-group offers." }, { week: "Week 11", task: "Batch 2 of Reels (exam sprint + success stories)." }, { week: "Week 12", task: "Seasonal event with Polish holiday pastries." } ] }
             },
-            captions: [
-                "\"3 sentences that instantly sound more natural.\"",
-                "\"Eighth grader? This trick saves points on the listening exam.\"",
-                "\"Speak English without stress. In small groups, over coffee, just like in real life.\"",
-                "\"Conversation + coffee = confidence in speaking.\""
-            ],
             kanban: {
                 todo: ["Update Google Business photos", "Print Starter Pack flyers with QR", "Film 3 Reels (batch)", "Launch Meta Lead Ad test (50 PLN/day)"],
                 inprogress: ["Organizing the first 'Conversation & Crafts'"],
@@ -221,168 +265,160 @@
         };
 
         const kpiContainer = document.getElementById('kpi-container');
-        data.kpis.forEach(kpi => {
-            kpiContainer.innerHTML += `
-                <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
-                    <div class="flex items-center space-x-4">
-                        <div class="text-3xl">${kpi.icon}</div>
-                        <div>
-                            <p class="text-gray-500 text-sm font-semibold">${kpi.title}</p>
-                            <p class="text-2xl font-bold text-gray-800">${kpi.value}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
+        data.kpis.forEach(kpi => { kpiContainer.innerHTML += `<div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1"><div class="flex items-center space-x-4"><div class="text-3xl">${kpi.icon}</div><div><p class="text-gray-500 text-sm font-semibold">${kpi.title}</p><p class="text-2xl font-bold text-gray-800">${kpi.value}</p></div></div></div>`; });
         
         const audienceContainer = document.getElementById('audience-container');
+        const audienceSelector = document.getElementById('audience-selector');
         data.audience.forEach(aud => {
-            audienceContainer.innerHTML += `
-                <div class="bg-amber-50/50 rounded-xl p-6 text-center">
-                    <div class="text-4xl mb-4">${aud.icon}</div>
-                    <h4 class="text-lg font-bold text-gray-800 mb-2">${aud.title}</h4>
-                    <p class="text-gray-600 text-sm">${aud.description}</p>
-                </div>
-            `;
+            audienceContainer.innerHTML += `<div class="bg-amber-50/50 rounded-xl p-6 text-center"><div class="text-4xl mb-4">${aud.icon}</div><h4 class="text-lg font-bold text-gray-800 mb-2">${aud.title}</h4><p class="text-gray-600 text-sm">${aud.description}</p></div>`;
+            const option = document.createElement('option');
+            option.value = aud.title;
+            option.textContent = aud.title;
+            audienceSelector.appendChild(option);
         });
 
         const funnelContainer = document.getElementById('funnel-container');
-        data.funnel.forEach((item, index) => {
-            funnelContainer.innerHTML += `
-                <div class="flex items-center">
-                    <div class="flex flex-col items-center p-2">
-                        <div class="bg-white text-3xl rounded-full w-16 h-16 flex items-center justify-center shadow">${item.icon}</div>
-                        <p class="mt-2 font-semibold text-sm">${item.stage}</p>
-                    </div>
-                    ${index < data.funnel.length - 1 ? `<div class="hidden md:block text-2xl text-gray-300 font-bold mx-2">→</div>` : ''}
-                </div>
-            `;
-        });
+        data.funnel.forEach((item, index) => { funnelContainer.innerHTML += `<div class="flex items-center"><div class="flex flex-col items-center p-2"><div class="bg-white text-3xl rounded-full w-16 h-16 flex items-center justify-center shadow">${item.icon}</div><p class="mt-2 font-semibold text-sm">${item.stage}</p></div>${index < data.funnel.length - 1 ? `<div class="hidden md:block text-2xl text-gray-300 font-bold mx-2">→</div>` : ''}</div>`; });
 
         const timelineContent = document.getElementById('timeline-content');
         const renderTimeline = (month) => {
             const monthData = data.timeline[month];
-            timelineContent.innerHTML = `
-                <div class="bg-white rounded-2xl p-8 shadow-sm animate-fade-in">
-                    <h3 class="text-2xl font-bold text-center text-gray-800 mb-6">${monthData.title}</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        ${monthData.weeks.map(week => `
-                            <div class="bg-gray-50 rounded-lg p-4">
-                                <p class="font-bold text-gray-700">${week.week}</p>
-                                <p class="text-gray-600 text-sm">${week.task}</p>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
+            timelineContent.innerHTML = `<div class="bg-white rounded-2xl p-8 shadow-sm animate-fade-in"><h3 class="text-2xl font-bold text-center text-gray-800 mb-6">${monthData.title}</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">${monthData.weeks.map(week => `<div class="bg-gray-50 rounded-lg p-4 flex flex-col justify-between"><div><p class="font-bold text-gray-700">${week.week}</p><p class="text-gray-600 text-sm">${week.task}</p></div><button class="expand-task-btn text-xs gemini-btn font-semibold py-1 px-2 rounded-md mt-3 w-full" data-task="${week.task}">✨ Expand Task</button></div>`).join('')}</div></div>`;
         };
         renderTimeline('month1');
 
         const tabButtons = document.querySelectorAll('.tab-btn');
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                const month = button.getAttribute('data-tab');
-                renderTimeline(month);
-            });
-        });
+        tabButtons.forEach(button => { button.addEventListener('click', () => { tabButtons.forEach(btn => btn.classList.remove('active')); button.classList.add('active'); const month = button.getAttribute('data-tab'); renderTimeline(month); }); });
         
-        const captionsContainer = document.getElementById('captions-container');
-        data.captions.forEach(caption => {
-            captionsContainer.innerHTML += `
-                <div class="bg-gray-100 rounded-lg p-4 italic text-gray-700">
-                    <p>${caption}</p>
-                </div>
-            `;
-        });
-
         const kanbanContainer = document.getElementById('kanban-container');
-        const renderKanbanCategory = (title, items, color) => {
-            return `
-                <div>
-                    <h4 class="font-bold text-lg mb-3" style="color: ${color};">${title}</h4>
-                    <div class="space-y-3">
-                        ${items.map(item => `
-                            <div class="kanban-card bg-gray-50 p-3 rounded-md" style="border-left-color: ${color};">
-                                <p class="text-gray-800">${item}</p>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        };
+        const renderKanbanCategory = (title, items, color) => { return `<div><h4 class="font-bold text-lg mb-3" style="color: ${color};">${title}</h4><div class="space-y-3">${items.map(item => `<div class="kanban-card bg-gray-50 p-3 rounded-md" style="border-left-color: ${color};"><p class="text-gray-800">${item}</p></div>`).join('')}</div></div>`; };
         kanbanContainer.innerHTML += renderKanbanCategory("To Do", data.kanban.todo, '#f59e0b');
         kanbanContainer.innerHTML += renderKanbanCategory("In Progress", data.kanban.inprogress, '#3b82f6');
         kanbanContainer.innerHTML += renderKanbanCategory("Done", data.kanban.done, '#10b981');
 
-        const ctx = document.getElementById('budgetChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: data.budget.labels,
-                datasets: [{
-                    label: 'Budget Allocation',
-                    data: data.budget.data,
-                    backgroundColor: data.budget.colors,
-                    borderColor: '#FDFBF8',
-                    borderWidth: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '70%',
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20,
-                            boxWidth: 12,
-                            font: {
-                                size: 12
-                            }
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.parsed !== null) {
-                                    label += context.parsed + '%';
-                                }
-                                return label;
-                            }
-                        }
-                    }
-                }
-            }
-        });
+        new Chart(document.getElementById('budgetChart').getContext('2d'), { type: 'doughnut', data: { labels: data.budget.labels, datasets: [{ label: 'Budget Allocation', data: data.budget.data, backgroundColor: data.budget.colors, borderColor: '#FDFBF8', borderWidth: 4 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { padding: 20, boxWidth: 12, font: { size: 12 } } }, tooltip: { callbacks: { label: function(c) { return `${c.label}: ${c.parsed}%`; } } } } } });
         
         const navLinks = document.querySelectorAll('.nav-link');
-        const sections = document.querySelectorAll('section');
-
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                if (pageYOffset >= sectionTop - 100) {
-                    current = section.getAttribute('id');
+        const sections = document.querySelectorAll('main section');
+        window.addEventListener('scroll', () => { let current = ''; sections.forEach(section => { if (pageYOffset >= section.offsetTop - 100) { current = section.getAttribute('id'); } }); navLinks.forEach(link => { link.classList.remove('active'); if (link.getAttribute('href') === `#${current}`) { link.classList.add('active'); } }); });
+        
+        const callGeminiAPI = async (prompt, schema = null, retries = 3, delay = 1000) => {
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            const payload = { contents: [{ parts: [{ text: prompt }] }] };
+            if (schema) { payload.generationConfig = { responseMimeType: "application/json", responseSchema: schema }; }
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    const result = await response.json();
+                    if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        return result.candidates[0].content.parts[0].text;
+                    } else { throw new Error("Invalid response structure from Gemini API"); }
+                } catch (error) {
+                    if (i === retries - 1) return `Error: Unable to get a response from the AI. Please try again.`;
+                    await new Promise(res => setTimeout(res, delay * Math.pow(2, i)));
                 }
-            });
+            }
+        };
 
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === `#${current}`) {
-                    link.classList.add('active');
-                }
-            });
+        const setButtonLoading = (button, isLoading) => {
+            const btnText = button.querySelector('.btn-text');
+            const loader = button.querySelector('.loader');
+            if (isLoading) {
+                btnText.classList.add('hidden');
+                loader.classList.remove('hidden');
+                button.disabled = true;
+            } else {
+                btnText.classList.remove('hidden');
+                loader.classList.add('hidden');
+                button.disabled = false;
+            }
+        };
+
+        const generatePostsBtn = document.getElementById('generate-posts-btn');
+        const postsOutput = document.getElementById('gemini-posts-output');
+        generatePostsBtn.addEventListener('click', async () => {
+            const audience = document.getElementById('audience-selector').value;
+            setButtonLoading(generatePostsBtn, true);
+            postsOutput.innerHTML = '<div class="flex justify-center"><div class="loader"></div></div>';
+            const prompt = `You are a creative social media marketer for ROZMOWA, a cozy language school in Poland focused on 'Coffee. Crafts. Conversation. Confidence.'. Generate 3 short, fresh, and engaging social media post ideas (captions only, in English) targeting this audience: ${audience}. The tone should be supportive, friendly, and encouraging.`;
+            const schema = { type: "ARRAY", items: { type: "STRING" } };
+            const responseText = await callGeminiAPI(prompt, schema);
+            try {
+                const ideas = JSON.parse(responseText);
+                postsOutput.innerHTML = ideas.map(idea => `<div class="bg-gray-100 rounded-lg p-4 italic text-gray-700 border border-amber-200 animate-fade-in"><p>${idea}</p></div>`).join('');
+            } catch (e) { postsOutput.innerHTML = `<p class="text-red-500">${responseText}</p>`; }
+            setButtonLoading(generatePostsBtn, false);
         });
         
+        const generateEmailBtn = document.getElementById('generate-email-btn');
+        const emailOutput = document.getElementById('gemini-email-output');
+        generateEmailBtn.addEventListener('click', async () => {
+            const emailType = document.getElementById('email-type-selector').value;
+            setButtonLoading(generateEmailBtn, true);
+            emailOutput.innerHTML = '<div class="flex justify-center"><div class="loader"></div></div>';
+            const prompt = `You are a marketing manager for ROZMOWA, a new, cozy language school in Poland focused on "Coffee, Crafts, Conversation, Confidence." Draft a professional yet friendly outreach email to a ${emailType}. The goal is to introduce ROZMOWA and propose a collaboration or feature. Include a clear subject line.`;
+            const schema = { type: "OBJECT", properties: { subject: { type: "STRING" }, body: { type: "STRING" } } };
+            const responseText = await callGeminiAPI(prompt, schema);
+            try {
+                const email = JSON.parse(responseText);
+                emailOutput.innerHTML = `<div class="bg-gray-100 rounded-lg p-4 border border-amber-200 animate-fade-in"><p class="font-bold">Subject: ${email.subject}</p><hr class="my-2"><p class="whitespace-pre-wrap">${email.body}</p></div>`;
+            } catch (e) { emailOutput.innerHTML = `<p class="text-red-500">${responseText}</p>`; }
+            setButtonLoading(generateEmailBtn, false);
+        });
+
+        const modal = document.getElementById('task-modal');
+        const modalContent = document.getElementById('modal-content');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const modalOverlay = document.querySelector('.modal-overlay');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+        const modalLoader = document.getElementById('modal-loader');
+        
+        const openModal = () => { modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => { modalContent.classList.remove('scale-95', 'opacity-0'); }, 50); };
+        const closeModal = () => { modalContent.classList.add('scale-95', 'opacity-0'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); };
+        closeModalBtn.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', closeModal);
+
+        const showInModal = (title, contentPromise) => {
+            modalTitle.textContent = title;
+            modalBody.innerHTML = '';
+            modalBody.classList.add('hidden');
+            modalLoader.classList.remove('hidden');
+            openModal();
+            contentPromise.then(content => {
+                try {
+                    modalBody.innerHTML = content;
+                } catch(e) { modalBody.innerHTML = `<p class="text-red-500">${content}</p>`; }
+                modalLoader.classList.add('hidden');
+                modalBody.classList.remove('hidden');
+            });
+        };
+        
+        document.getElementById('briefing-btn').addEventListener('click', async () => {
+            const prompt = `Act as a senior marketing strategist. Based on the following 90-day plan data for a language school named ROZMOWA, provide a concise strategic briefing. Summarize the core strategy, key strengths, and primary focus for each of the three months. The plan focuses on KPIs: ${JSON.stringify(data.kpis)}, targets this audience: ${JSON.stringify(data.audience.map(a=>a.title))}, with this timeline: ${JSON.stringify(data.timeline)}.`;
+            const contentPromise = callGeminiAPI(prompt).then(responseText => {
+                 return responseText.replace(/\n/g, '<br>');
+            });
+            showInModal("AI-Powered Strategic Briefing", contentPromise);
+        });
+        
+        timelineContent.addEventListener('click', async (e) => {
+            if (e.target.classList.contains('expand-task-btn')) {
+                const taskText = e.target.dataset.task;
+                const prompt = `You are an expert marketing project manager. Break down the task "${taskText}" for a local language school into a list of 3-4 actionable sub-steps. Provide a brief, one-sentence description for each step.`;
+                const schema = { type: "OBJECT", properties: { subTasks: { type: "ARRAY", items: { type: "OBJECT", properties: { step: { type: "STRING" }, description: { type: "STRING" } } } } } };
+                const contentPromise = callGeminiAPI(prompt, schema).then(responseText => {
+                    const result = JSON.parse(responseText);
+                    return result.subTasks.map((sub, index) => `<div class="border-l-4 border-amber-400 pl-4 py-2"><h4><strong>${index + 1}. ${sub.step}</strong></h4><p>${sub.description}</p></div>`).join('');
+                });
+                showInModal(`Action Steps for: ${taskText}`, contentPromise);
+            }
+        });
     });
     </script>
 </body>
 </html>
+
+
