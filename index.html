@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROZMOWA | Interactive 90-Day Marketing Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Latte -->
+    <!-- Application Structure Plan: The application is designed as a single-page dashboard with top navigation for quick access to key sections. This structure was chosen to transform the static PDF into an actionable tool. It starts with high-level KPIs for an immediate overview, followed by audience details, strategic breakdown (budget and funnel), an interactive tabbed 90-day timeline for detailed planning, and finishes with ready-to-use tools like social media captions. This task-oriented flow allows a user to quickly grasp the plan's goals, understand the strategy, and then dive into the specific weekly actions without being overwhelmed by a long document. -->
+    <!-- Visualization & Content Choices: Report Info: KPIs -> Goal: Inform -> Viz: Dynamic Stat Cards -> Interaction: Hover for context -> Justification: Quick, high-level overview of success metrics. Report Info: Budget Allocation -> Goal: Compare Proportions -> Viz: Donut Chart -> Interaction: Hover to see details -> Justification: Best practice for showing budget distribution clearly. Library: Chart.js. Report Info: Marketing Funnel -> Goal: Organize Process -> Viz: HTML/CSS Diagram -> Interaction: None, purely visual -> Justification: Clearly illustrates the customer journey. Report Info: 90-Day Timeline -> Goal: Organize Change/Schedule -> Viz: Interactive Tabs -> Interaction: Click to switch months -> Justification: Breaks the dense 12-week schedule into manageable monthly views, preventing information overload. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8;
+            color: #4A4A4A;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #D3A37F;
+            border-bottom-color: #D3A37F;
+        }
+        .tab-btn {
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            background-color: #D3A37F;
+            color: #FFFFFF;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .kanban-card {
+            border-left: 4px solid;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-gray-800">
+                ROZMOWA<span class="text-xl text-[#D3A37F] font-semibold"> | 90-Day Plan</span>
+            </div>
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#goals" class="nav-link text-gray-600 font-semibold pb-1">Goals</a>
+                <a href="#audience" class="nav-link text-gray-600 font-semibold pb-1">Audience</a>
+                <a href="#strategy" class="nav-link text-gray-600 font-semibold pb-1">Strategy</a>
+                <a href="#roadmap" class="nav-link text-gray-600 font-semibold pb-1">Roadmap</a>
+                <a href="#tools" class="nav-link text-gray-600 font-semibold pb-1">Tools</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <section class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Coffee. Crafts. Conversation. Confidence.</h1>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">An interactive action plan for the first 90 days, aimed at building a community and filling seats at ROZMOWA. We focus on real actions, not spreadsheets.</p>
+        </section>
+
+        <section id="goals" class="mb-16">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-2">Key Goals (KPIs)</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">These are our main success metrics for the next 90 days. We will monitor them weekly to ensure we are heading in the right direction.</p>
+            <div id="kpi-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            </div>
+        </section>
+
+        <section id="audience" class="mb-16 bg-white rounded-2xl p-8 shadow-sm">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-2">Our Target Audience</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">We understand who we're talking to. Our actions are precisely tailored to the needs and desires of each of these groups to create a friendly and effective learning space for them.</p>
+            <div id="audience-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+        </section>
+        
+        <section id="strategy" class="mb-16">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Strategy Foundations</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="bg-white rounded-2xl p-8 shadow-sm">
+                    <h3 class="text-2xl font-bold text-center text-gray-800 mb-2">Budget Allocation</h3>
+                    <p class="text-center text-gray-600 mb-6">We focus investments where they'll yield the greatest return – building a digital presence and organizing events that create our community.</p>
+                    <div class="chart-container">
+                        <canvas id="budgetChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-8 shadow-sm h-full flex flex-col justify-center">
+                    <h3 class="text-2xl font-bold text-center text-gray-800 mb-2">Marketing Funnel</h3>
+                     <p class="text-center text-gray-600 mb-8">Our path leads a customer from first contact to becoming a loyal community member who refers us to others. Each stage has its own goals and tools.</p>
+                    <div id="funnel-container" class="flex flex-col md:flex-row justify-center items-center gap-2 text-center">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="roadmap" class="mb-16">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-2">90-Day Roadmap</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">A detailed, week-by-week action plan. Click on a month to see the key tasks and goals that will help us grow step by step.</p>
+            <div class="flex justify-center mb-8 bg-gray-100 rounded-full p-2 max-w-sm mx-auto">
+                <button data-tab="month1" class="tab-btn active w-full py-2 px-4 rounded-full font-semibold">Month 1</button>
+                <button data-tab="month2" class="tab-btn w-full py-2 px-4 rounded-full font-semibold">Month 2</button>
+                <button data-tab="month3" class="tab-btn w-full py-2 px-4 rounded-full font-semibold">Month 3</button>
+            </div>
+            <div id="timeline-content">
+            </div>
+        </section>
+
+        <section id="tools" class="bg-white rounded-2xl p-8 shadow-sm">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Tools & Quick Actions</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Post Ideas Bank</h3>
+                    <p class="text-gray-600 mb-6">Ready-to-use captions that capture the spirit of ROZMOWA. Use them to quickly create engaging social media content.</p>
+                    <div id="captions-container" class="space-y-4">
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Kanban Board</h3>
+                     <p class="text-gray-600 mb-6">A clear view of our priorities. We know what's to be done, what's in progress, and what we've completed to maintain momentum.</p>
+                    <div id="kanban-container" class="space-y-6">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-100 mt-16">
+        <div class="container mx-auto px-6 py-8 text-center text-gray-600">
+            <p>&copy; 2025 ROZMOWA | Interactive Action Plan</p>
+            <p class="text-sm mt-2">Built to turn strategy into real results.</p>
+        </div>
+    </footer>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        
+        const data = {
+            kpis: [
+                { title: "New Leads Weekly", value: "25+", icon: "🎯", description: "Goal: Generate a steady flow of potential customers." },
+                { title: "Cost Per Lead", value: "< 25 PLN", icon: "💰", description: "Goal: Maintain cost-effectiveness of our campaigns." },
+                { title: "Conversion (Trial -> Enroll)", value: "≥ 50%", icon: "📈", description: "Goal: Effectively convert interest into actual enrollments." },
+                { title: "Referral Rate", value: "≥ 15%", icon: "🤝", description: "Goal: Build a community that actively recommends us (Month 3 goal)." },
+            ],
+            audience: [
+                { title: "Adults A0-B1", description: "People who were discouraged by English in school and are looking for friendly practice.", icon: "🧑‍🏫" },
+                { title: "Teens (Exams)", description: "Students preparing for the eighth-grade exam and matura.", icon: "🎓" },
+                { title: "Moms on Leave", description: "Looking for daytime classes in a stroller-friendly place.", icon: "👩‍👧‍👦" },
+                { title: "Seniors 50+", description: "Wanting to learn at their own pace in a supportive environment.", icon: "🧓" },
+                { title: "Local SMEs", description: "Companies around Gliwice/Zabrze interested in mini-groups for employees.", icon: "🏢" },
+            ],
+            budget: {
+                labels: ["Digital Marketing", "Print Materials", "Events", "Local Outreach", "Contingency"],
+                data: [40, 15, 25, 15, 5],
+                colors: ['#D3A37F', '#E5C0A6', '#C08457', '#A9714B', '#EAE0D9']
+            },
+            funnel: [
+                { stage: "Awareness", icon: "📢" },
+                { stage: "Interest", icon: "💡" },
+                { stage: "Trial", icon: "✅" },
+                { stage: "Enroll", icon: "✍️" },
+                { stage: "Retain", icon: "❤️" },
+                { stage: "Refer", icon: "🗣️" }
+            ],
+            timeline: {
+                month1: {
+                    title: "Month 1: Building Awareness",
+                    weeks: [
+                        { week: "Week 1", task: "Launch website + first batch of Reels." },
+                        { week: "Week 2", task: "Grand opening + posts on Google Business profile." },
+                        { week: "Week 3", task: "Flyer drop (QR to WA chat) + local press outreach." },
+                        { week: "Week 4", task: "First 'Conversation & Crafts' night." }
+                    ]
+                },
+                month2: {
+                    title: "Month 2: Engagement & Conversion",
+                    weeks: [
+                        { week: "Week 5", task: "Launch loyalty program + Starter Pack ads (50 PLN/day)." },
+                        { week: "Week 6", task: "Parent-focused exam prep campaign." },
+                        { week: "Week 7", task: "Customer appreciation event + reviews drive." },
+                        { week: "Week 8", task: "Expanded workshops (evening slots)." }
+                    ]
+                },
+                month3: {
+                    title: "Month 3: Expansion & Loyalty",
+                    weeks: [
+                        { week: "Week 9", task: "Referral program rollout (Give 10 / Get 10 zł)." },
+                        { week: "Week 10", task: "Outreach to local SMEs with mini-group offers." },
+                        { week: "Week 11", task: "Batch 2 of Reels (exam sprint + success stories)." },
+                        { week: "Week 12", task: "Seasonal event with Polish holiday pastries." }
+                    ]
+                }
+            },
+            captions: [
+                "\"3 sentences that instantly sound more natural.\"",
+                "\"Eighth grader? This trick saves points on the listening exam.\"",
+                "\"Speak English without stress. In small groups, over coffee, just like in real life.\"",
+                "\"Conversation + coffee = confidence in speaking.\""
+            ],
+            kanban: {
+                todo: ["Update Google Business photos", "Print Starter Pack flyers with QR", "Film 3 Reels (batch)", "Launch Meta Lead Ad test (50 PLN/day)"],
+                inprogress: ["Organizing the first 'Conversation & Crafts'"],
+                done: ["Website is live with Starter Pack CTA"]
+            }
+        };
+
+        const kpiContainer = document.getElementById('kpi-container');
+        data.kpis.forEach(kpi => {
+            kpiContainer.innerHTML += `
+                <div class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1">
+                    <div class="flex items-center space-x-4">
+                        <div class="text-3xl">${kpi.icon}</div>
+                        <div>
+                            <p class="text-gray-500 text-sm font-semibold">${kpi.title}</p>
+                            <p class="text-2xl font-bold text-gray-800">${kpi.value}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        const audienceContainer = document.getElementById('audience-container');
+        data.audience.forEach(aud => {
+            audienceContainer.innerHTML += `
+                <div class="bg-amber-50/50 rounded-xl p-6 text-center">
+                    <div class="text-4xl mb-4">${aud.icon}</div>
+                    <h4 class="text-lg font-bold text-gray-800 mb-2">${aud.title}</h4>
+                    <p class="text-gray-600 text-sm">${aud.description}</p>
+                </div>
+            `;
+        });
+
+        const funnelContainer = document.getElementById('funnel-container');
+        data.funnel.forEach((item, index) => {
+            funnelContainer.innerHTML += `
+                <div class="flex items-center">
+                    <div class="flex flex-col items-center p-2">
+                        <div class="bg-white text-3xl rounded-full w-16 h-16 flex items-center justify-center shadow">${item.icon}</div>
+                        <p class="mt-2 font-semibold text-sm">${item.stage}</p>
+                    </div>
+                    ${index < data.funnel.length - 1 ? `<div class="hidden md:block text-2xl text-gray-300 font-bold mx-2">→</div>` : ''}
+                </div>
+            `;
+        });
+
+        const timelineContent = document.getElementById('timeline-content');
+        const renderTimeline = (month) => {
+            const monthData = data.timeline[month];
+            timelineContent.innerHTML = `
+                <div class="bg-white rounded-2xl p-8 shadow-sm animate-fade-in">
+                    <h3 class="text-2xl font-bold text-center text-gray-800 mb-6">${monthData.title}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        ${monthData.weeks.map(week => `
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <p class="font-bold text-gray-700">${week.week}</p>
+                                <p class="text-gray-600 text-sm">${week.task}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        };
+        renderTimeline('month1');
+
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                const month = button.getAttribute('data-tab');
+                renderTimeline(month);
+            });
+        });
+        
+        const captionsContainer = document.getElementById('captions-container');
+        data.captions.forEach(caption => {
+            captionsContainer.innerHTML += `
+                <div class="bg-gray-100 rounded-lg p-4 italic text-gray-700">
+                    <p>${caption}</p>
+                </div>
+            `;
+        });
+
+        const kanbanContainer = document.getElementById('kanban-container');
+        const renderKanbanCategory = (title, items, color) => {
+            return `
+                <div>
+                    <h4 class="font-bold text-lg mb-3" style="color: ${color};">${title}</h4>
+                    <div class="space-y-3">
+                        ${items.map(item => `
+                            <div class="kanban-card bg-gray-50 p-3 rounded-md" style="border-left-color: ${color};">
+                                <p class="text-gray-800">${item}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        };
+        kanbanContainer.innerHTML += renderKanbanCategory("To Do", data.kanban.todo, '#f59e0b');
+        kanbanContainer.innerHTML += renderKanbanCategory("In Progress", data.kanban.inprogress, '#3b82f6');
+        kanbanContainer.innerHTML += renderKanbanCategory("Done", data.kanban.done, '#10b981');
+
+        const ctx = document.getElementById('budgetChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: data.budget.labels,
+                datasets: [{
+                    label: 'Budget Allocation',
+                    data: data.budget.data,
+                    backgroundColor: data.budget.colors,
+                    borderColor: '#FDFBF8',
+                    borderWidth: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            boxWidth: 12,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += context.parsed + '%';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('section');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+        
+    });
+    </script>
+</body>
+</html>
