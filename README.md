@@ -131,7 +131,7 @@ MIT — add a `LICENSE` file if you plan to open-source. If this stays private, 
 ## 📬 Contact
 
 - **School:** ROZMOWA — Pilchowice, Rynek 9  
-- **Email:** hello@yourdomain.example (replace)  
+- **Email:** waangielski@gmail.com  
 - **Instagram:** @rozmowa.szkola
 
 ---
