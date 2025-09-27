@@ -13,3 +13,17 @@ async function askGemini(prompt) {
   const data = await res.json();
   return data.text || "No response from Gemini.";
 }
+
+document.querySelector("#ask").addEventListener("click", async () => {
+  const prompt = document.querySelector("#prompt").value.trim();
+  const resultBox = document.querySelector("#result");
+
+  resultBox.textContent = "Loading...";
+
+  try {
+    const answer = await askGemini(prompt);
+    resultBox.textContent = answer;
+  } catch (err) {
+    resultBox.textContent = "Error: " + err.message;
+  }
+});
