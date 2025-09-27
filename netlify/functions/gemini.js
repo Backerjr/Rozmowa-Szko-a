@@ -12,32 +12,17 @@ module.exports.handler = async function (event) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          contents: [{ role: "user", parts: [{ text: prompt }] }],
+          contents: [{ parts: [{ text: prompt }] }],
         }),
       }
     );
 
     const data = await resp.json();
 
-    // Try to pull the text
-    let text = "";
-    if (
-      data.candidates &&
-      data.candidates[0] &&
-      data.candidates[0].content &&
-      data.candidates[0].content.parts
-    ) {
-      text = data.candidates[0].content.parts
-        .map((p) => p.text || "")
-        .join("");
-    }
-
+    // 🚨 Instead of parsing, just return raw JSON so we can inspect it
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        text: text || "(Gemini returned no text)",
-        raw: data, // helpful to inspect
-      }),
+      body: JSON.stringify(data, null, 2),
     };
   } catch (err) {
     return {
