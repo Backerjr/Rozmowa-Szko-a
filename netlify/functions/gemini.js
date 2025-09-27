@@ -19,10 +19,23 @@ module.exports.handler = async function (event) {
 
     const data = await resp.json();
 
-    // 🚨 Instead of parsing, just return raw JSON so we can inspect it
+    // Try to extract text
+    let text = "";
+    if (
+      data?.candidates &&
+      data.candidates[0]?.content?.parts?.length > 0
+    ) {
+      text = data.candidates[0].content.parts
+        .map((p) => p.text || "")
+        .join("");
+    }
+
     return {
       statusCode: 200,
-      body: JSON.stringify(data, null, 2),
+      body: JSON.stringify({
+        text: text || "(Gemini returned no text)",
+        raw: data, // keep raw for debugging
+      }),
     };
   } catch (err) {
     return {
