@@ -7,7 +7,7 @@ module.exports.handler = async function (event) {
     const { prompt } = JSON.parse(event.body || "{}");
 
     const resp = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -19,7 +19,6 @@ module.exports.handler = async function (event) {
 
     const data = await resp.json();
 
-    // Extract text safely
     let text = "";
     if (
       data?.candidates &&
@@ -34,7 +33,7 @@ module.exports.handler = async function (event) {
       statusCode: 200,
       body: JSON.stringify({
         text: text || "(Gemini returned no text)",
-        raw: data, // keep raw visible for debugging
+        raw: data,
       }),
     };
   } catch (err) {
