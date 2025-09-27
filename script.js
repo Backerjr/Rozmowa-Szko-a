@@ -5,18 +5,11 @@ async function askGemini(prompt) {
     body: JSON.stringify({ prompt }),
   });
 
-  const data = await res.json();
-  return data.text;
-}
-
-document.querySelector("#ask").addEventListener("click", async () => {
-  const prompt = document.querySelector("#prompt").value.trim();
-  document.querySelector("#result").textContent = "Loading...";
-
-  try {
-    const answer = await askGemini(prompt);
-    document.querySelector("#result").textContent = answer;
-  } catch (e) {
-    document.querySelector("#result").textContent = "Error: " + e.message;
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Server error ${res.status}: ${errorText}`);
   }
-});
+
+  const data = await res.json();
+  return data.text || "No response from Gemini.";
+}
