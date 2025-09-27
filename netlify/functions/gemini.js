@@ -18,12 +18,20 @@ module.exports.handler = async function (event) {
     );
 
     const data = await resp.json();
-    const text =
-      data?.candidates?.[0]?.content?.parts?.map((p) => p.text).join("") || "";
+
+    // Safely extract the text
+    let text = "";
+    if (data?.candidates?.length > 0) {
+      const parts = data.candidates[0].content?.parts || [];
+      text = parts.map((p) => p.text || "").join("");
+    }
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ text }),
+      body: JSON.stringify({
+        text: text || "(Gemini returned no text)",
+        raw: data, // include raw for debugging
+      }),
     };
   } catch (err) {
     return {
