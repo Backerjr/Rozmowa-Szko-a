@@ -19,7 +19,7 @@ module.exports.handler = async function (event) {
 
     const data = await resp.json();
 
-    // Try to extract text
+    // Extract text safely
     let text = "";
     if (
       data?.candidates &&
@@ -34,7 +34,7 @@ module.exports.handler = async function (event) {
       statusCode: 200,
       body: JSON.stringify({
         text: text || "(Gemini returned no text)",
-        raw: data, // keep raw for debugging
+        raw: data, // keep raw visible for debugging
       }),
     };
   } catch (err) {
