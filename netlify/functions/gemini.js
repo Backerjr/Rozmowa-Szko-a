@@ -1,4 +1,6 @@
-export async function handler(event) {
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+
+module.exports.handler = async function (event) {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
@@ -27,4 +29,8 @@ export async function handler(event) {
     };
   } catch (err) {
     return {
-      statusCode:
+      statusCode: 500,
+      body: JSON.stringify({ error: err.message }),
+    };
+  }
+};
