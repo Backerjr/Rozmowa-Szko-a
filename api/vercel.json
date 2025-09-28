@@ -1,9 +1,0 @@
-{
-  "functions": {
-    "api/gemini.js": {
-      "runtime": "nodejs18.x",
-      "memory": 512,
-      "maxDuration": 60
-    }
-  }
-}
