@@ -1,14 +1,12 @@
 {
   "builds": [
-    {
-      "src": "api/gemini.js",
-      "use": "@vercel/node"
-    }
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "script.js", "use": "@vercel/static" },
+    { "src": "api/**/*.js", "use": "@vercel/node" }
   ],
   "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/gemini.js"
-    }
+    { "src": "/", "dest": "/index.html" },
+    { "src": "/script.js", "dest": "/script.js" },
+    { "src": "/api/(.*)", "dest": "/api/$1" }
   ]
 }
