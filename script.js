@@ -2,7 +2,7 @@ document.getElementById("ask").addEventListener("click", async () => {
   const prompt = document.getElementById("prompt").value;
   const resultBox = document.getElementById("result");
 
-  resultBox.textContent = "✨ Thinking...";
+  resultBox.textContent = "🌙 Thinking...";
 
   try {
     const response = await fetch("/api/gemini", {
@@ -17,11 +17,11 @@ document.getElementById("ask").addEventListener("click", async () => {
 
     const data = await response.json();
 
-    // Extract text safely from Gemini response
+    // Safely extract Gemini text
     const answer =
-      data.candidates?.[0]?.content?.parts?.[0]?.text ||
-      data.text ||
-      "(Gemini returned no text)";
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      data?.output ||
+      "⚠️ Gemini returned no text.";
 
     resultBox.textContent = answer;
   } catch (err) {
