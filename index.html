@@ -3,36 +3,71 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ask Wiktoria</title>
-
+  <title>Rozmowa: Wiktoria AI Assistant</title>
   <style>
     body {
-      font-family: sans-serif;
-      min-height: 100vh;
       margin: 0;
-      padding: 2rem;
-
-      /* 🌌 Background */
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      background-size: cover;
+      color: white;
       text-align: center;
     }
 
     h1 {
-      margin-bottom: 1rem;
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
     }
 
     input {
       width: 300px;
       padding: 0.5rem;
-      margin: 0.5rem;
-      border-radius: 6px;
+      font-size: 1rem;
+      border-radius: 5px;
       border: none;
+      margin-right: 0.5rem;
     }
 
     button {
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      background: #6a11cb;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    pre {
+      margin-top: 1.5rem;
+      white-space: pre-wrap;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 1rem;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 600px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h1>Ask Wiktoria 🌙</h1>
+  <div>
+    <input id="prompt" placeholder="Type your question..." />
+    <button id="ask">Ask</button>
+  </div>
+  <pre id="result"></pre>
+
+  <script src="script.js"></script>
+</body>
+</html>
