@@ -12,13 +12,17 @@ export default async function handler(req, res) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-        }),
+          contents: [{ parts: [{ text: prompt }] }]
+        })
       }
     );
 
     const data = await response.json();
-    res.status(200).json({ text: data.candidates?.[0]?.content?.parts?.[0]?.text || "(No response)" });
+
+    // Extract the text safely
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "(Gemini returned no text)";
+
+    res.status(200).json({ text, raw: data });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
