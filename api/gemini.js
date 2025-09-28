@@ -4,7 +4,6 @@ export default async function handler(req, res) {
   }
 
   const { prompt } = req.body;
-
   if (!prompt) {
     return res.status(400).json({ error: "Missing prompt in request body" });
   }
@@ -17,8 +16,8 @@ export default async function handler(req, res) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-        }),
+          contents: [{ parts: [{ text: prompt }] }]
+        })
       }
     );
 
