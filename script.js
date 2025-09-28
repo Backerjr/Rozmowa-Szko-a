@@ -6,9 +6,11 @@ document.getElementById("ask").addEventListener("click", async () => {
 
   try {
     const response = await fetch("/api/gemini", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt })
+      method: "POST",   // 👈 MUST be POST
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ prompt })  // 👈 Send prompt in body
     });
 
     if (!response.ok) {
@@ -16,14 +18,7 @@ document.getElementById("ask").addEventListener("click", async () => {
     }
 
     const data = await response.json();
-
-    // Safely extract Gemini text
-    const answer =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      data?.output ||
-      "⚠️ Gemini returned no text.";
-
-    resultBox.textContent = answer;
+    resultBox.textContent = data.text || "Gemini returned no text.";
   } catch (err) {
     resultBox.textContent = "⚠️ Error: " + err.message;
   }
