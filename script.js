@@ -1,29 +1,30 @@
-async function askGemini(prompt) {
-  const res = await fetch("/api/gemini", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt }),
-  });
+document.getElementById("ask").addEventListener("click", async () => {
+  const prompt = document.getElementById("prompt").value;
+  const resultBox = document.getElementById("result");
 
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(`Server error ${res.status}: ${errorText}`);
-  }
-
-  const data = await res.json();
-  return data.text || "No response from Gemini.";
-}
-
-document.querySelector("#ask").addEventListener("click", async () => {
-  const prompt = document.querySelector("#prompt").value.trim();
-  const resultBox = document.querySelector("#result");
-
-  resultBox.textContent = "Loading...";
+  resultBox.textContent = "✨ Thinking...";
 
   try {
-    const answer = await askGemini(prompt);
+    const response = await fetch("/api/gemini", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt })
+    });
+
+    if (!response.ok) {
+      throw new Error("Server error " + response.status);
+    }
+
+    const data = await response.json();
+
+    // Extract text safely from Gemini response
+    const answer =
+      data.candidates?.[0]?.content?.parts?.[0]?.text ||
+      data.text ||
+      "(Gemini returned no text)";
+
     resultBox.textContent = answer;
   } catch (err) {
-    resultBox.textContent = "Error: " + err.message;
+    resultBox.textContent = "⚠️ Error: " + err.message;
   }
 });
