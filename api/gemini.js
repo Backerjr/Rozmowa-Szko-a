@@ -1,5 +1,6 @@
 const DEFAULT_MODEL = "gemini-1.5-flash-latest";
 
+ codex/fix-deployment-not-found-error-hgq19b
 function normalizeModel(model) {
   if (!model) {
     return DEFAULT_MODEL;
@@ -17,6 +18,8 @@ function normalizeModel(model) {
   return withoutSuffix || DEFAULT_MODEL;
 }
 
+
+ main
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -34,7 +37,11 @@ export default async function handler(req, res) {
       .json({ error: "Server misconfiguration: missing GEMINI_API_KEY" });
   }
 
+ codex/fix-deployment-not-found-error-hgq19b
   const model = normalizeModel(process.env.GEMINI_MODEL);
+
+  const model = process.env.GEMINI_MODEL?.trim() || DEFAULT_MODEL;
+ main
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`;
 
   try {
