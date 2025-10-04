@@ -1,4 +1,5 @@
 const DEFAULT_MODEL = "gemini-1.5-flash-latest";
+ codex/fix-deployment-not-found-error-kr0jn4
 const DEFAULT_API_BASE = "https://generativelanguage.googleapis.com";
 const DEFAULT_API_VERSION = "v1beta";
 const DEFAULT_API_METHOD = "generateContent";
@@ -8,6 +9,10 @@ function getTrimmedEnv(name) {
   return typeof value === "string" ? value.trim() : undefined;
 }
 
+
+
+ codex/fix-deployment-not-found-error-hgq19b
+ main
 function normalizeModel(model) {
   if (!model) {
     return DEFAULT_MODEL;
@@ -25,6 +30,7 @@ function normalizeModel(model) {
   return withoutSuffix || DEFAULT_MODEL;
 }
 
+<<<<<< codex/fix-deployment-not-found-error-kr0jn4
 function stripTrailingSlashes(value) {
   return value.replace(/\/+$/g, "");
 }
@@ -122,6 +128,10 @@ function resolveRequestConfig(apiKey) {
   return { endpoint, headers };
 }
 
+
+
+ main
+ main
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -133,20 +143,37 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Missing prompt in request body" });
   }
 
+ codex/fix-deployment-not-found-error-kr0jn4
   const apiKey = getTrimmedEnv("GEMINI_API_KEY");
 
   if (!apiKey) {
+
+  if (!process.env.GEMINI_API_KEY) {
+ main
     return res
       .status(500)
       .json({ error: "Server misconfiguration: missing GEMINI_API_KEY" });
   }
 
+ codex/fix-deployment-not-found-error-kr0jn4
   const { endpoint, headers } = resolveRequestConfig(apiKey);
+
+ codex/fix-deployment-not-found-error-hgq19b
+  const model = normalizeModel(process.env.GEMINI_MODEL);
+
+  const model = process.env.GEMINI_MODEL?.trim() || DEFAULT_MODEL;
+ main
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`;
+ main
 
   try {
     const response = await fetch(endpoint, {
       method: "POST",
+ codex/fix-deployment-not-found-error-kr0jn4
       headers,
+
+      headers: { "Content-Type": "application/json" },
+ main
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
       }),
@@ -155,8 +182,12 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
+ codex/fix-deployment-not-found-error-kr0jn4
       const errorMessage =
         data?.error?.message || data?.message || `Gemini API error ${response.status}`;
+
+      const errorMessage = data?.error?.message || `Gemini API error ${response.status}`;
+ main
       return res.status(response.status).json({ error: errorMessage });
     }
 
